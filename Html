@@ -1,284 +1,884 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>รักษ์โลก — รณรงค์เพื่อสิ่งแวดล้อม</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800;900&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green-deep: #0a2e0f;
+      --green-mid: #1a5c28;
+      --green-bright: #2d9e4f;
+      --green-lime: #7ec845;
+      --yellow: #d4e84a;
+      --cream: #f5f0e8;
+      --earth: #8b5e3c;
+      --sky: #a8dce8;
+    }
 
-<title>คะแนนนักเรียน</title>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-<style>
+    html { scroll-behavior: smooth; }
 
-body{
-margin:0;
-font-family:Arial;
-background:#f4f4f4;
-transition:0.3s;
-}
+    body {
+      background: var(--green-deep);
+      color: var(--cream);
+      font-family: 'Sarabun', sans-serif;
+      overflow-x: hidden;
+    }
 
-/* DARK MODE */
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
 
-.dark{
-background:#121212;
-color:white;
-}
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(10,46,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(126,200,69,0.15);
+    }
 
-/* ปุ่มเมนู */
+    .nav-logo {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: var(--green-lime);
+      letter-spacing: -0.02em;
+    }
 
-.menu-btn{
-position:fixed;
-top:10px;
-left:10px;
-font-size:28px;
-background:#333;
-color:white;
-padding:8px 12px;
-cursor:pointer;
-z-index:1001;
-}
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
 
-/* เมนู */
+    .nav-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.95rem;
+      opacity: 0.8;
+      transition: opacity 0.2s, color 0.2s;
+    }
 
-.sidebar{
-position:fixed;
-top:0;
-left:-250px;
-width:250px;
-height:100%;
-background:#222;
-transition:0.3s;
-padding-top:60px;
-}
+    .nav-links a:hover { opacity: 1; color: var(--green-lime); }
 
-.sidebar.show{
-left:0;
-}
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 0 2rem;
+      text-align: center;
+    }
 
-.sidebar a{
-display:block;
-padding:12px 20px;
-color:white;
-text-decoration:none;
-}
+    /* animated radial glow */
+    .hero-glow {
+      position: absolute;
+      width: 80vw; height: 80vw;
+      max-width: 900px; max-height: 900px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,158,79,0.25) 0%, rgba(10,46,15,0) 70%);
+      animation: pulse 6s ease-in-out infinite;
+    }
 
-.sidebar a:hover{
-background:#444;
-}
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
 
-/* ปุ่มโหมด */
+    /* floating leaves */
+    .leaf {
+      position: absolute;
+      font-size: 1.8rem;
+      animation: float linear infinite;
+      opacity: 0.3;
+    }
+    .leaf:nth-child(1)  { left: 8%;  animation-duration: 14s; animation-delay: 0s;   top: 20%; }
+    .leaf:nth-child(2)  { left: 85%; animation-duration: 18s; animation-delay: -4s;  top: 60%; }
+    .leaf:nth-child(3)  { left: 15%; animation-duration: 22s; animation-delay: -8s;  top: 70%; }
+    .leaf:nth-child(4)  { left: 70%; animation-duration: 16s; animation-delay: -2s;  top: 30%; }
+    .leaf:nth-child(5)  { left: 45%; animation-duration: 20s; animation-delay: -10s; top: 80%; }
 
-.darkbtn{
-position:fixed;
-top:10px;
-right:10px;
-padding:8px 12px;
-background:#333;
-color:white;
-cursor:pointer;
-}
+    @keyframes float {
+      0%   { transform: translateY(0) rotate(0deg); }
+      50%  { transform: translateY(-40px) rotate(180deg); }
+      100% { transform: translateY(0) rotate(360deg); }
+    }
 
-/* เนื้อหา */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
 
-.content{
-padding:60px 20px;
-text-align:center;
-}
+    .hero-eyebrow {
+      display: inline-block;
+      font-family: 'Kanit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--green-lime);
+      border: 1px solid rgba(126,200,69,0.4);
+      padding: 0.35rem 1.2rem;
+      border-radius: 50px;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.8s ease both;
+    }
 
-/* ค้นหา */
+    .hero-title {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
 
-input{
-padding:10px;
-width:250px;
-margin-bottom:20px;
-}
+    .hero-title .accent {
+      color: var(--green-lime);
+      display: block;
+    }
 
-/* ตาราง */
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      opacity: 0.75;
+      line-height: 1.7;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
 
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-}
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s ease 0.6s both;
+    }
 
-.dark table{
-background:#222;
-}
+    .btn-primary {
+      background: var(--green-lime);
+      color: var(--green-deep);
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-family: 'Kanit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(126,200,69,0.3);
+    }
 
-th,td{
-border:1px solid #ccc;
-padding:10px;
-}
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 50px rgba(126,200,69,0.5);
+    }
 
-th{
-background:#4CAF50;
-color:white;
-}
+    .btn-outline {
+      border: 1.5px solid rgba(245,240,232,0.4);
+      color: var(--cream);
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-family: 'Kanit', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
 
-/* แชท */
+    .btn-outline:hover {
+      border-color: var(--green-lime);
+      color: var(--green-lime);
+    }
 
-#chatBox{
-height:250px;
-border:1px solid #ccc;
-overflow-y:auto;
-padding:10px;
-margin-top:20px;
-background:white;
-}
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-.dark #chatBox{
-background:#333;
-}
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0.5;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: fadeUp 1s ease 1s both;
+    }
 
-</style>
+    .scroll-dot {
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--green-lime), transparent);
+      animation: scrollDot 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollDot {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.3; transform: scaleY(0.5); }
+    }
+
+    /* ── STATS BAND ── */
+    .stats-band {
+      background: var(--green-lime);
+      color: var(--green-deep);
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 2.5rem 2rem;
+      gap: 1rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+
+    /* ── ISSUES SECTION ── */
+    .section {
+      padding: 8rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      font-family: 'Kanit', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--green-lime);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      opacity: 0.7;
+      line-height: 1.8;
+      max-width: 550px;
+      margin-bottom: 4rem;
+    }
+
+    /* issue cards */
+    .issues-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .issue-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(126,200,69,0.12);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, background 0.3s;
+    }
+
+    .issue-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(126,200,69,0.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .issue-card:hover { transform: translateY(-6px); border-color: rgba(126,200,69,0.4); }
+    .issue-card:hover::before { opacity: 1; }
+
+    .issue-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .issue-title {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: var(--green-lime);
+    }
+
+    .issue-text {
+      font-size: 0.95rem;
+      opacity: 0.7;
+      line-height: 1.7;
+    }
+
+    /* ── PLEDGE SECTION ── */
+    .pledge-section {
+      background: linear-gradient(135deg, var(--green-mid) 0%, var(--green-deep) 100%);
+      border-top: 1px solid rgba(126,200,69,0.2);
+      border-bottom: 1px solid rgba(126,200,69,0.2);
+      padding: 8rem 4rem;
+    }
+
+    .pledge-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .pledge-list {
+      list-style: none;
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .pledge-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: rgba(126,200,69,0.08);
+      border-radius: 12px;
+      border-left: 3px solid var(--green-lime);
+      transition: background 0.2s;
+    }
+
+    .pledge-item:hover { background: rgba(126,200,69,0.15); }
+
+    .pledge-check {
+      color: var(--green-lime);
+      font-size: 1.2rem;
+      margin-top: 0.1rem;
+      flex-shrink: 0;
+    }
+
+    .pledge-item-text {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* sign up form */
+    .signup-form {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(126,200,69,0.2);
+      border-radius: 20px;
+      padding: 3rem;
+    }
+
+    .signup-form h3 {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .signup-form p {
+      opacity: 0.65;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0.7;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 0.85rem 1.1rem;
+      color: var(--cream);
+      font-family: 'Sarabun', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--green-lime);
+    }
+
+    .form-group input::placeholder { opacity: 0.4; }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      background: var(--green-lime);
+      color: var(--green-deep);
+      border: none;
+      padding: 1.1rem;
+      border-radius: 10px;
+      font-family: 'Kanit', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(126,200,69,0.35);
+    }
+
+    /* ── TIPS SECTION ── */
+    .tips-section {
+      padding: 8rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .tip-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .tip-card:hover {
+      background: rgba(126,200,69,0.08);
+      border-color: rgba(126,200,69,0.3);
+      transform: translateY(-4px);
+    }
+
+    .tip-emoji { font-size: 2rem; display: block; margin-bottom: 0.8rem; }
+
+    .tip-title {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--green-lime);
+      margin-bottom: 0.4rem;
+    }
+
+    .tip-desc {
+      font-size: 0.85rem;
+      opacity: 0.6;
+      line-height: 1.5;
+    }
+
+    /* ── QUOTE ── */
+    .quote-section {
+      padding: 6rem 4rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .big-quote {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+      line-height: 1.3;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .big-quote .highlight {
+      color: var(--green-lime);
+    }
+
+    .quote-attr {
+      margin-top: 2rem;
+      opacity: 0.5;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(126,200,69,0.15);
+      padding: 3rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      color: var(--green-lime);
+      font-size: 1.2rem;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      opacity: 0.45;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.85rem;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+
+    .footer-links a:hover { opacity: 1; }
+
+    /* ── DIVIDER ── */
+    .wave-divider {
+      width: 100%;
+      line-height: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 800px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .section, .tips-section { padding: 5rem 1.5rem; }
+      .pledge-section { padding: 5rem 1.5rem; }
+      .pledge-inner { grid-template-columns: 1fr; gap: 3rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+      .quote-section { padding: 4rem 1.5rem; }
+    }
+
+    /* scroll-reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- ปุ่มเมนู -->
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">🌿 รักษ์โลก</div>
+    <ul class="nav-links">
+      <li><a href="#issues">ปัญหาสิ่งแวดล้อม</a></li>
+      <li><a href="#action">ร่วมรณรงค์</a></li>
+      <li><a href="#tips">เคล็ดลับ</a></li>
+      <li><a href="#pledge" class="btn-primary" style="padding:0.5rem 1.4rem; font-size:0.9rem">ลงชื่อร่วม</a></li>
+    </ul>
+  </nav>
 
-<div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <span class="leaf">🍃</span>
+    <span class="leaf">🌿</span>
+    <span class="leaf">🍂</span>
+    <span class="leaf">🌱</span>
+    <span class="leaf">🍀</span>
 
-<!-- ปุ่ม Dark mode -->
+    <div class="hero-content">
+      <div class="hero-eyebrow">รณรงค์เพื่อโลกที่ดีกว่า</div>
+      <h1 class="hero-title">
+        เราต้องการ
+        <span class="accent">โลกที่ยั่งยืน</span>
+        เพื่ออนาคต
+      </h1>
+      <p class="hero-sub">
+        ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง<br/>ปกป้องธรรมชาติ ลดโลกร้อน และสร้างอนาคตที่สดใสให้ลูกหลาน
+      </p>
+      <div class="hero-cta">
+        <a href="#pledge" class="btn-primary">ร่วมลงชื่อรณรงค์</a>
+        <a href="#issues" class="btn-outline">เรียนรู้เพิ่มเติม</a>
+      </div>
+    </div>
 
-<div class="darkbtn" onclick="toggleDark()">🌙</div>
+    <div class="scroll-hint">
+      <span>เลื่อนลง</span>
+      <div class="scroll-dot"></div>
+    </div>
+  </section>
 
-<!-- เมนู -->
+  <!-- STATS BAND -->
+  <div class="stats-band">
+    <div class="stat-item">
+      <div class="stat-number">1.5°C</div>
+      <div class="stat-label">อุณหภูมิโลกเพิ่มขึ้น</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">8M</div>
+      <div class="stat-label">ตันขยะพลาสติกในทะเลต่อปี</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">1M</div>
+      <div class="stat-label">สายพันธุ์เสี่ยงสูญพันธุ์</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">13M</div>
+      <div class="stat-label">เฮกตาร์ป่าถูกทำลายต่อปี</div>
+    </div>
+  </div>
 
-<div id="menu" class="sidebar">
+  <!-- ISSUES SECTION -->
+  <section id="issues" class="section">
+    <div class="reveal">
+      <p class="section-tag">ปัญหาเร่งด่วน</p>
+      <h2 class="section-title">วิกฤตที่โลก<br/>กำลังเผชิญอยู่</h2>
+      <p class="section-desc">สิ่งแวดล้อมโลกกำลังย่ำแย่ลงทุกวัน การรับรู้และลงมือแก้ไขตั้งแต่วันนี้คือกุญแจสำคัญที่สุด</p>
+    </div>
 
-<a href="index.html">หน้าหลัก</a>
-<a href="news.html">ข่าว</a>
-<a href="activity.html">กิจกรรม</a>
-<a href="grades.html">คะแนน</a>
-<a href="contact.html">ติดต่อ</a>
+    <div class="issues-grid">
+      <div class="issue-card reveal">
+        <span class="issue-icon">🌡️</span>
+        <div class="issue-title">ภาวะโลกร้อน</div>
+        <p class="issue-text">อุณหภูมิเฉลี่ยของโลกเพิ่มขึ้นต่อเนื่องจากก๊าซเรือนกระจก ส่งผลให้เกิดภัยพิบัติทางธรรมชาติรุนแรงขึ้น น้ำแข็งขั้วโลกละลาย และระดับน้ำทะเลสูงขึ้น</p>
+      </div>
+      <div class="issue-card reveal" style="transition-delay:0.1s">
+        <span class="issue-icon">🌊</span>
+        <div class="issue-title">มลพิษทางน้ำ</div>
+        <p class="issue-text">ขยะพลาสติกและสารเคมีไหลลงสู่มหาสมุทรทุกวัน ทำลายระบบนิเวศทางทะเลและส่งผลต่อห่วงโซ่อาหารของมนุษย์</p>
+      </div>
+      <div class="issue-card reveal" style="transition-delay:0.2s">
+        <span class="issue-icon">🌲</span>
+        <div class="issue-title">การทำลายป่า</div>
+        <p class="issue-text">ป่าไม้เป็นปอดของโลก แต่ถูกตัดทำลายเพื่อการเกษตรและอุตสาหกรรม ส่งผลให้สัตว์ป่าสูญพันธุ์และคาร์บอนไดออกไซด์เพิ่มขึ้น</p>
+      </div>
+      <div class="issue-card reveal" style="transition-delay:0.3s">
+        <span class="issue-icon">💨</span>
+        <div class="issue-title">มลพิษทางอากาศ</div>
+        <p class="issue-text">PM2.5 และมลพิษจากการเผาไหม้คร่าชีวิตผู้คนหลายล้านคนต่อปี โดยเฉพาะในเมืองใหญ่ที่มีการจราจรหนาแน่น</p>
+      </div>
+      <div class="issue-card reveal" style="transition-delay:0.4s">
+        <span class="issue-icon">🐝</span>
+        <div class="issue-title">การสูญเสียความหลากหลาย</div>
+        <p class="issue-text">สิ่งมีชีวิตกว่า 1 ล้านสายพันธุ์เสี่ยงสูญพันธุ์ การสูญเสียสมดุลของระบบนิเวศส่งผลกระทบโดยตรงต่อการผลิตอาหารและยา</p>
+      </div>
+      <div class="issue-card reveal" style="transition-delay:0.5s">
+        <span class="issue-icon">🏭</span>
+        <div class="issue-title">ขยะอิเล็กทรอนิกส์</div>
+        <p class="issue-text">ซากอุปกรณ์อิเล็กทรอนิกส์มีสารพิษที่ปนเปื้อนดินและน้ำใต้ดิน การรีไซเคิลอย่างถูกวิธีจึงมีความสำคัญอย่างยิ่ง</p>
+      </div>
+    </div>
+  </section>
 
-</div>
+  <!-- QUOTE -->
+  <section class="quote-section reveal">
+    <p class="big-quote">
+      "โลกไม่ได้เป็นสิ่งที่เราได้รับมรดกมาจากบรรพบุรุษ<br/>
+      แต่เป็นสิ่งที่เรา<span class="highlight">ยืมมาจากลูกหลาน</span>"
+    </p>
+    <p class="quote-attr">— คำกล่าวอมตะเพื่อสิ่งแวดล้อม</p>
+  </section>
 
-<div class="content">
+  <!-- PLEDGE SECTION -->
+  <section id="action" class="pledge-section">
+    <div class="pledge-inner">
+      <div class="reveal">
+        <p class="section-tag">สิ่งที่คุณทำได้</p>
+        <h2 class="section-title" style="max-width:400px">ร่วมเปลี่ยนแปลง<br/>ตั้งแต่วันนี้</h2>
+        <p class="section-desc">การกระทำเล็ก ๆ น้อย ๆ ของทุกคนสามารถสร้างผลกระทบที่ยิ่งใหญ่ได้</p>
 
-<h2>รายชื่อนักเรียน</h2>
+        <ul class="pledge-list">
+          <li class="pledge-item">
+            <span class="pledge-check">✓</span>
+            <span class="pledge-item-text">ลดการใช้พลาสติกครั้งเดียวทิ้ง ใช้ถุงผ้าและขวดน้ำส่วนตัว</span>
+          </li>
+          <li class="pledge-item">
+            <span class="pledge-check">✓</span>
+            <span class="pledge-item-text">แยกขยะและรีไซเคิลอย่างถูกวิธีทุกวัน</span>
+          </li>
+          <li class="pledge-item">
+            <span class="pledge-check">✓</span>
+            <span class="pledge-item-text">ลดการใช้พลังงาน ปิดไฟและเครื่องใช้ไฟฟ้าเมื่อไม่ใช้งาน</span>
+          </li>
+          <li class="pledge-item">
+            <span class="pledge-check">✓</span>
+            <span class="pledge-item-text">เดินทางด้วยระบบขนส่งสาธารณะหรือจักรยาน</span>
+          </li>
+          <li class="pledge-item">
+            <span class="pledge-check">✓</span>
+            <span class="pledge-item-text">ปลูกต้นไม้และสนับสนุนพื้นที่สีเขียวในชุมชน</span>
+          </li>
+        </ul>
+      </div>
 
-<input type="text" id="search" placeholder="ค้นหาชื่อ..." onkeyup="searchName()">
+      <!-- SIGN UP FORM -->
+      <div id="pledge" class="signup-form reveal" style="transition-delay:0.2s">
+        <h3>ลงชื่อร่วมรณรงค์</h3>
+        <p>เข้าร่วมกับผู้คนนับหมื่นที่ใส่ใจโลกใบนี้</p>
 
-<table id="studentTable">
+        <div class="form-group">
+          <label>ชื่อ-นามสกุล</label>
+          <input type="text" placeholder="กรอกชื่อของคุณ" id="inp-name"/>
+        </div>
+        <div class="form-group">
+          <label>อีเมล</label>
+          <input type="email" placeholder="your@email.com" id="inp-email"/>
+        </div>
+        <div class="form-group">
+          <label>จังหวัด</label>
+          <input type="text" placeholder="เช่น กรุงเทพมหานคร" id="inp-city"/>
+        </div>
+        <button class="submit-btn" onclick="handleSubmit()">🌱 ร่วมลงชื่อรณรงค์</button>
 
-<tr>
-<th>ชั้น</th>
-<th>ห้อง</th>
-<th>ชื่อ</th>
-</tr>
+        <div id="form-success" style="display:none; margin-top:1.5rem; text-align:center; color:var(--green-lime); font-family:'Kanit',sans-serif; font-weight:700; font-size:1.1rem;">
+          ✅ ขอบคุณที่ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง!
+        </div>
+      </div>
+    </div>
+  </section>
 
-<tr><td>ม.1</td><td>1</td><td>กิตติพงษ์ ใจดี</td></tr>
-<tr><td>ม.1</td><td>1</td><td>ธนกร พรหมมา</td></tr>
-<tr><td>ม.1</td><td>1</td><td>พีรพล แก้วทอง</td></tr>
-<tr><td>ม.1</td><td>1</td><td>ศุภชัย แสงทอง</td></tr>
-<tr><td>ม.1</td><td>1</td><td>อภิชาติ นาคดี</td></tr>
+  <!-- TIPS SECTION -->
+  <section id="tips" class="tips-section">
+    <div class="reveal">
+      <p class="section-tag">เคล็ดลับง่าย ๆ</p>
+      <h2 class="section-title">ชีวิตประจำวัน<br/>รักษ์โลกได้</h2>
+    </div>
 
-<tr><td>ม.2</td><td>1</td><td>ปกรณ์ แก้วคำ</td></tr>
-<tr><td>ม.2</td><td>1</td><td>ธีรภัทร์ อินทร์ทอง</td></tr>
-<tr><td>ม.2</td><td>1</td><td>พงศกร สุขดี</td></tr>
-<tr><td>ม.2</td><td>1</td><td>ณัฐพล ศรีวงศ์</td></tr>
-<tr><td>ม.2</td><td>1</td><td>กฤษฎา คำดี</td></tr>
+    <div class="tips-grid">
+      <div class="tip-card reveal">
+        <span class="tip-emoji">🛁</span>
+        <div class="tip-title">ประหยัดน้ำ</div>
+        <p class="tip-desc">อาบน้ำแทนแช่อ่าง ประหยัดน้ำได้กว่า 150 ลิตรต่อครั้ง</p>
+      </div>
+      <div class="tip-card reveal" style="transition-delay:0.08s">
+        <span class="tip-emoji">🥦</span>
+        <div class="tip-title">กินผักมากขึ้น</div>
+        <p class="tip-desc">ลดเนื้อสัตว์ 1 วันต่อสัปดาห์ ลด CO₂ ได้ 8 กก.</p>
+      </div>
+      <div class="tip-card reveal" style="transition-delay:0.16s">
+        <span class="tip-emoji">♻️</span>
+        <div class="tip-title">รีไซเคิลทุกวัน</div>
+        <p class="tip-desc">แยกขยะกระดาษ พลาสติก แก้ว โลหะ ก่อนทิ้ง</p>
+      </div>
+      <div class="tip-card reveal" style="transition-delay:0.24s">
+        <span class="tip-emoji">💡</span>
+        <div class="tip-title">LED ประหยัดพลังงาน</div>
+        <p class="tip-desc">เปลี่ยนหลอดไฟเป็น LED ประหยัดไฟได้ถึง 80%</p>
+      </div>
+      <div class="tip-card reveal" style="transition-delay:0.32s">
+        <span class="tip-emoji">🚲</span>
+        <div class="tip-title">ปั่นจักรยาน</div>
+        <p class="tip-desc">ระยะ 5 กม. ปั่นจักรยานแทนรถยนต์ ไม่มี CO₂ เลย</p>
+      </div>
+      <div class="tip-card reveal" style="transition-delay:0.40s">
+        <span class="tip-emoji">🌳</span>
+        <div class="tip-title">ปลูกต้นไม้</div>
+        <p class="tip-desc">ต้นไม้ 1 ต้นดูดซับ CO₂ ได้ประมาณ 22 กก./ปี</p>
+      </div>
+      <div class="tip-card reveal" style="transition-delay:0.48s">
+        <span class="tip-emoji">🛍️</span>
+        <div class="tip-title">ถุงผ้าแทนพลาสติก</div>
+        <p class="tip-desc">ถุงผ้า 1 ใบใช้ได้นับร้อยครั้ง แทนถุงพลาสติกหลายร้อยใบ</p>
+      </div>
+      <div class="tip-card reveal" style="transition-delay:0.56s">
+        <span class="tip-emoji">☀️</span>
+        <div class="tip-title">พลังงานแสงอาทิตย์</div>
+        <p class="tip-desc">ติดตั้งโซลาร์เซลล์ลดค่าไฟและช่วยโลกไปพร้อมกัน</p>
+      </div>
+    </div>
+  </section>
 
-<tr><td>ม.3</td><td>1</td><td>ธีรเมธ ทองดี</td></tr>
-<tr><td>ม.3</td><td>1</td><td>พีรภัทร แสงดี</td></tr>
-<tr><td>ม.3</td><td>1</td><td>ธนากร อินทร์สวัสดิ์</td></tr>
-<tr><td>ม.3</td><td>1</td><td>วีรภัทร คำดี</td></tr>
-<tr><td>ม.3</td><td>1</td><td>ศุภณัฐ ใจบุญ</td></tr>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">🌿 รักษ์โลก</div>
+    <div class="footer-links">
+      <a href="#issues">ปัญหาสิ่งแวดล้อม</a>
+      <a href="#action">ร่วมรณรงค์</a>
+      <a href="#tips">เคล็ดลับ</a>
+    </div>
+    <div class="footer-copy">© 2025 รักษ์โลก — เพื่อโลกที่ยั่งยืน</div>
+  </footer>
 
-<tr><td>ม.4</td><td>1</td><td>กิตติศักดิ์ สุขใจ</td></tr>
-<tr><td>ม.4</td><td>1</td><td>ธนพล แสงดี</td></tr>
-<tr><td>ม.4</td><td>1</td><td>วรพล สุขสันต์</td></tr>
-<tr><td>ม.4</td><td>1</td><td>ปวริศ ทองคำ</td></tr>
-<tr><td>ม.4</td><td>1</td><td>อาทิตย์ ศรีงาม</td></tr>
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
 
-<tr><td>ม.5</td><td>1</td><td>ภัทรดนัย ใจบุญ</td></tr>
-<tr><td>ม.5</td><td>1</td><td>กิตติศักดิ์ ทองสุข</td></tr>
-<tr><td>ม.5</td><td>1</td><td>ธีรเดช คำสิงห์</td></tr>
-<tr><td>ม.5</td><td>1</td><td>ปริญญา ใจกล้า</td></tr>
-<tr><td>ม.5</td><td>1</td><td>ศิวกร แก้วสว่าง</td></tr>
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-<tr><td>ม.6</td><td>1</td><td>ธันวา สุขใจ</td></tr>
-<tr><td>ม.6</td><td>1</td><td>ภูมิพัฒน์ วงศ์ดี</td></tr>
-<tr><td>ม.6</td><td>1</td><td>ณัฐวุฒิ คำแสน</td></tr>
-<tr><td>ม.6</td><td>1</td><td>กฤตภาส ศรีทอง</td></tr>
-<tr><td>ม.6</td><td>1</td><td>นพดล ใจงาม</td></tr>
-
-</table>
-
-<h3>ห้องแชท</h3>
-
-<div id="chatBox"></div>
-
-<input id="msg" placeholder="พิมพ์ข้อความ...">
-<button onclick="sendMsg()">ส่ง</button>
-
-</div>
-
-<script>
-
-/* เมนู */
-
-function toggleMenu(){
-document.getElementById("menu").classList.toggle("show");
-}
-
-/* ปิดเมนูเมื่อกดที่อื่น */
-
-document.addEventListener("click",function(e){
-
-let menu=document.getElementById("menu");
-let btn=document.querySelector(".menu-btn");
-
-if(!menu.contains(e.target)&&!btn.contains(e.target)){
-menu.classList.remove("show");
-}
-
-});
-
-/* Dark mode */
-
-function toggleDark(){
-document.body.classList.toggle("dark");
-}
-
-/* ค้นหา */
-
-function searchName(){
-
-let input=document.getElementById("search").value.toLowerCase();
-let rows=document.querySelectorAll("#studentTable tr");
-
-rows.forEach((row,i)=>{
-
-if(i===0)return;
-
-let name=row.cells[2].innerText.toLowerCase();
-
-row.style.display=name.includes(input)?"":"none";
-
-});
-
-}
-
-/* แชท */
-
-function sendMsg(){
-
-let msg=document.getElementById("msg").value;
-
-if(msg==="")return;
-
-let p=document.createElement("p");
-
-p.innerText=msg;
-
-document.getElementById("chatBox").appendChild(p);
-
-document.getElementById("msg").value="";
-
-}
-
-</script>
-
+    // Form submit
+    function handleSubmit() {
+      const name  = document.getElementById('inp-name').value.trim();
+      const email = document.getElementById('inp-email').value.trim();
+      if (!name || !email) {
+        alert('กรุณากรอกชื่อและอีเมลของคุณ');
+        return;
+      }
+      document.getElementById('form-success').style.display = 'block';
+      document.querySelector('.submit-btn').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
